@@ -84,6 +84,40 @@
       <button type="submit">Subscribe</button>
       <p class="small-note">We’ll only send occasional essays and thoughtful updates. No spam.</p>
     </form>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var form = document.querySelector('.join-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var action = form.action;
+          var redirectUrl = 'thank-you.html';
+          var formData = new FormData(form);
+
+          fetch(action, {
+            method: form.method,
+            body: formData,
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
+          .then(function (response) {
+            if (response.ok) {
+              window.location.href = redirectUrl;
+            } else {
+              return response.json().then(function (data) {
+                throw new Error(data.error || 'Submission failed');
+              });
+            }
+          })
+          .catch(function (error) {
+            console.error('Form submission error:', error);
+            form.submit();
+          });
+        });
+      });
+    </script>
   </section>
 
   <div class="refs">
